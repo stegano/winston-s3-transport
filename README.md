@@ -101,7 +101,7 @@ const s3Transport = new S3Transport({
     * Group ID to identify the log
   * _dataUploadInterval?: number (default: 1000 * 20)_
     * Data upload interval(milliseconds)
-  * _fileRotationInterval?: number (default: 1000 * 1000 * 2)_
+  * _fileRotationInterval?: number (default: 1000 * 60)_
     * File rotation interval(milliseconds)
-  * _maxDataSize?: number (default: 1000 * 60)_
+  * _maxDataSize?: number (default: 1000 * 1000 * 2)_
     * Max data size(byte)
