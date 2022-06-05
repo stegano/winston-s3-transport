@@ -1,0 +1,16 @@
+{
+  "presets": [
+    "@babel/preset-typescript",
+    "minify",
+    [
+      "@babel/preset-env",
+      {
+        "targets": "defaults"
+      }
+    ]
+  ],
+  "comments": false,
+  "ignore": [
+    "**/*.d.ts"
+  ]
+}
