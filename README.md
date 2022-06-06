@@ -53,11 +53,11 @@ const s3Transport = new S3Transport({
   s3TransportConfig: {
     bucket: 'my-bucket',
     bucketPath: () => {
-      const yyyyMMdd = format(new Date(), 'yyyyMMdd');
-      const hhmmss = format(new Date(), 'hhmmss');
+      const date = new Date();
+      const yyyyMMdd = format(date, 'yyyyMMdd');
+      const hhmmss = format(date, 'hhmmss');
       const uuid = uuidv4();
-      const path = `/logs/${yyyyMMdd}/${hhmmss}/${uuid}.log`;
-      return path // e.g.`/logs/20220606/015930/9365665e-f985-4347-8623-2b5cb7f444ef.log`
+      return `/logs/${yyyyMMdd}/${hhmmss}/${uuid}.log` // ⇛ `/logs/20220606/015930/9365665e-f985-4347-8623-2b5cb7f444ef.log`
     },
   }
 });
@@ -105,3 +105,7 @@ const s3Transport = new S3Transport({
     * File rotation interval(milliseconds)
   * _maxDataSize?: number (default: 1000 * 1000 * 2)_
     * Max data size(byte)
+
+
+## Motivation
+It was created to reduce unnecessary costs by sending logs to winston and storing them in AWS S3 buckets, and by dividing the log data into efficient structures when aggregating the vast amount of log data accumulated in AWS Athena.
