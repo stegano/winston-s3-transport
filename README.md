@@ -85,4 +85,4 @@ logger.info({ userId: 'user001', ....logs });
 
 
 ## Motivation
-It was created to reduce unnecessary costs by sending logs to [Winston](https://github.com/winstonjs/winston) and storing them in AWS S3 buckets, and by partitioning the log data into efficient structures when aggregating the vast amount of log data accumulated in AWS Athena.
+I made this so that it can be efficiently partitioned when storing log data in the S3 bucket. When you use vast amounts of S3 data in Athena, partitioned data can help you use the cost effectively.
