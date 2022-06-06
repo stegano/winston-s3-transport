@@ -172,7 +172,7 @@ class S3Transport extends Transport {
       logGroup.uploadTime = new Date();
       logGroup.isUpdated = false;
       /**
-       * 파일 업로드
+       * Upload files
        */
       S3Transport.uploadToS3Bucket(
         this.s3Client,
