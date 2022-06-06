@@ -74,7 +74,7 @@ logger.info({ userId: 'user001', ....logs });
   * AWS S3 Bucket name
 #### bucketPath*: _((groupId: string) => string) | string_
   * AWS S3 Bucket path to upload log files
-#### groupId?: _((logInfo: any) => string) | string (default: "default")_
+#### groupId?: _(<T = any>(logInfo: T) => string) | string (default: "default")_
   * Group ID to identify the log
 #### dataUploadInterval?: _number (default: 1000 * 20)_
   * Data upload interval(milliseconds)

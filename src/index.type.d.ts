@@ -21,7 +21,7 @@ interface S3TransportConfig {
   // Bucket path to upload files
   bucketPath: ((groupId: string) => string) | string;
   // Group ID to identify the log
-  groupId?: ((logInfo: any) => string) | string;
+  groupId?: (<T = any>(logInfo: T) => string) | string;
   // Data upload interval
   dataUploadInterval?: number;
   // Max data size
