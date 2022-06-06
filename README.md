@@ -40,7 +40,7 @@ export const s3Logger = winston.createLogger({
 ```
 
 ### Advanced
-#### Dynamic bucket name
+#### Dynamic bucket path
 > You can use a dynamic bucket path.
 > (Important) The bucket path is created when the log is first written.
 ```ts
@@ -57,7 +57,7 @@ const s3Transport = new S3Transport({
       const hhmmss = format(new Date(), 'hhmmss');
       const uuid = uuidv4();
       const path = `/logs/${yyyyMMdd}/${hhmmss}/${uuid}.log`;
-      return path // e.g.`logs/20220606/015930/9365665e-f985-4347-8623-2b5cb7f444ef.log`
+      return path // e.g.`/logs/20220606/015930/9365665e-f985-4347-8623-2b5cb7f444ef.log`
     },
   }
 });
@@ -82,7 +82,7 @@ const s3Transport = new S3Transport({
     },
     bucketPath: (groupId: string) => {
       const path = `/logs/${groupId}.log`;
-      return path // ⇛ `logs/20220606/015930/9365665e-f985-4347-8623-2b5cb7f444ef.log`
+      return path // ⇛ `/logs/abcGroup.log`
     },
   }
 });

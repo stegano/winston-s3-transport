@@ -12,9 +12,8 @@
     "publish": "npm run build && npm publish"
   },
   "contributors": [
-    "Yongwoo Jung<stegano@naver.com>"
+    "Yongwoo Jung<stegano@naver.com"
   ],
-  "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.100.0",
     "date-fns": "^2.28.0",
