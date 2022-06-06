@@ -1,5 +1,5 @@
 # Winston S3 Transport
-> Logs generated through Winston can be transferred to an S3 bucket using `winston-s3-tranport`.
+> Logs generated through Winston can be transferred to an S3 bucket using `winston-s3-transport`.
 
 ## Installation
 
