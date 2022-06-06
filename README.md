@@ -31,14 +31,16 @@ const s3Transport = new S3Transport({
   s3TransportConfig: {
     bucket: "my-bucket",
     groupId: (logInfo: any) => {
-      // Group logs with user IDs and store them in memory. If the user ID does not exist, we will use the `anonymous` group.
+      // Group logs with user IDs and store them in memory. 
+      // If the user ID does not exist, we will use the `anonymous` group.
       return logInfo?.message?.userId || "anonymous";
     },
     bucketPath: (groupId: string = "default") => {
       const date = new Date();
       const timestamp = format(date, "yyyyMMddhhmmss");
       const uuid = uuidv4();
-      // The bucket path in which the log is uploaded. You can create a bucket path by combining `groupId`, `timestamp`, and `uuid` values.
+      // The bucket path in which the log is uploaded. 
+      // You can create a bucket path by combining `groupId`, `timestamp`, and `uuid` values.
       return `/logs/${groupId}/${timestamp}/${uuid}.log`;
     },
   },
@@ -68,9 +70,9 @@ logger.info({ userId: 'user001', ....logs });
 > This library is internally using [`@aws-sdk/client-s3`](https://www.npmjs.com/package/@aws-sdk/client-s3) to upload files to AWS S3.
   * Please see [AWSJavaScriptSDK/s3clientconfig](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/s3clientconfig.html)
 ### s3TransportConfig
-#### bucket: string
+#### bucket*: string
   * AWS S3 Bucket name
-#### bucketPath: _((groupId: string) => string) | string_
+#### bucketPath*: _((groupId: string) => string) | string_
   * AWS S3 Bucket path to upload log files
 #### groupId?: _((logInfo: any) => string) | string (default: "default")_
   * Group ID to identify the log
