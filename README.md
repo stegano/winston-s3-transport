@@ -31,8 +31,8 @@ const s3Transport = new S3Transport({
   s3TransportConfig: {
     bucket: "my-bucket",
     groupId: (logInfo: any) => {
-      // Group logs with user IDs and store them in memory. 
-      // If the user ID does not exist, we will use the `anonymous` group.
+      // Group logs with `userId` value and store them in memory. 
+      // If the `userId` value does not exist, we will use the `anonymous` group.
       return logInfo?.message?.userId || "anonymous";
     },
     bucketPath: (groupId: string = "default") => {
