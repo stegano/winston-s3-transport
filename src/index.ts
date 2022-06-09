@@ -18,9 +18,13 @@ class S3Transport extends Transport {
      */
     this.s3TransportConfig = {
       /**
-       * Group ID to identify the logs
+       * @deprecated Use group instead of groupId.
        */
       groupId: "default",
+      /**
+       * Group for logs classification.
+       */
+      group: "default",
       /**
        * 1000ms x 20 ⇛ 20s
        */
@@ -39,6 +43,11 @@ class S3Transport extends Transport {
       gzip: false,
       ...options.s3TransportConfig,
     };
+    if (this.s3TransportConfig.groupId) {
+      console.warn(
+        "`S3TransportConfig.groupId` has been deprecated. Please use `S3TransportConfig.group`"
+      );
+    }
     this.s3Client = new S3Client(options.s3ClientConfig);
     this.logGroups = {};
 
@@ -145,9 +154,9 @@ class S3Transport extends Transport {
     /**
      * Create a new log group if it doesn't exist
      */
-    const { groupId } = this.s3TransportConfig;
-    const logGroupId =
-      typeof groupId === "function" ? groupId(logInfo) : groupId;
+    const group =
+      this.s3TransportConfig.group || this.s3TransportConfig.groupId;
+    const logGroupId = typeof group === "function" ? group(logInfo) : group;
     const logGroup =
       this.logGroups[logGroupId] ||
       S3Transport.createLogGroup(logGroupId, this.s3TransportConfig);

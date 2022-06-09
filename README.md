@@ -1,3 +1,6 @@
+![NPM License](https://img.shields.io/npm/l/winston-s3-transport)
+![NPM Downloads](https://img.shields.io/npm/dw/winston-s3-transport)
+
 # Winston S3 Transport
 > Logs generated through Winston can be transferred to an S3 bucket using `winston-s3-transport`.
 
@@ -30,7 +33,7 @@ const s3Transport = new S3Transport({
   },
   s3TransportConfig: {
     bucket: "my-bucket",
-    groupId: (logInfo: any) => {
+    group: (logInfo: any) => {
       // Group logs with `userId` value and store them in memory. 
       // If the `userId` value does not exist, we will use the `anonymous` group.
       return logInfo?.message?.userId || "anonymous";
@@ -74,8 +77,8 @@ logger.info({ userId: 'user001', ....logs });
   * AWS S3 Bucket name
 #### bucketPath*: _((groupId: string) => string) | string_
   * AWS S3 Bucket path to upload log files
-#### groupId?: _(<T = any>(logInfo: T) => string) | string (default: "default")_
-  * Group ID to identify the log
+#### group?: _(<T = any>(logInfo: T) => string) | string (default: "default")_
+  * Group for logs classification.
 #### dataUploadInterval?: _number (default: 1000 * 20)_
   * Data upload interval(milliseconds)
 #### fileRotationInterval?: _number (default: 1000 * 60)_

@@ -20,7 +20,11 @@ interface S3TransportConfig {
   bucket: string;
   // Bucket path to upload files
   bucketPath: ((groupId: string) => string) | string;
-  // Group ID to identify the log
+  // Group for logs classification.
+  group?: (<T = any>(logInfo: T) => string) | string;
+  /**
+   * @deprecated Use group instead of groupId.
+   */
   groupId?: (<T = any>(logInfo: T) => string) | string;
   // Data upload interval
   dataUploadInterval?: number;
