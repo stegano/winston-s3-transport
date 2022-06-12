@@ -35,7 +35,7 @@ const s3Transport = new S3Transport({
     bucket: "my-bucket",
     group: (logInfo: any) => {
       // Group logs with `userId` value and store them in memory. 
-      // If the `userId` value does not exist, we will use the `anonymous` group.
+      // If the 'userId' value does not exist, use the `anonymous` group.
       return logInfo?.message?.userId || "anonymous";
     },
     bucketPath: (groupId: string = "default") => {
@@ -73,9 +73,9 @@ logger.info({ userId: 'user001', ....logs });
 > This library is internally using [`@aws-sdk/client-s3`](https://www.npmjs.com/package/@aws-sdk/client-s3) to upload files to AWS S3.
   * Please see [AWSJavaScriptSDK/s3clientconfig](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/s3clientconfig.html)
 ### s3TransportConfig
-#### bucket*: string
+#### bucket: string
   * AWS S3 Bucket name
-#### bucketPath*: _((groupId: string) => string) | string_
+#### bucketPath: _((groupId: string) => string) | string_
   * AWS S3 Bucket path to upload log files
 #### group?: _(<T = any>(logInfo: T) => string) | string (default: "default")_
   * Group for logs classification.
