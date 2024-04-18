@@ -12,10 +12,6 @@ export interface S3TransportConfig {
     bucket: string;
     bucketPath: ((groupId: string) => string) | string;
     group?: (<T = any>(logInfo: T) => string) | string;
-    /**
-     * @deprecated Use group instead of groupId.
-     */
-    groupId?: (<T = any>(logInfo: T) => string) | string;
     dataUploadInterval?: number;
     maxDataSize?: number;
     fileRotationInterval?: number;
