@@ -1,7 +1,7 @@
 import Transport from "winston-transport";
 import { S3ClientConfig } from "@aws-sdk/client-s3";
 
-interface LogGroup {
+export interface LogGroup {
   data: any[];
   // Bucket
   bucket: string;
@@ -15,7 +15,7 @@ interface LogGroup {
   uploadTime?: Date;
 }
 
-interface S3TransportConfig {
+export interface S3TransportConfig {
   // Bucket name
   bucket: string;
   // Bucket path to upload files
@@ -36,7 +36,7 @@ interface S3TransportConfig {
   gzip?: boolean;
 }
 
-interface Options extends Transport.TransportStreamOptions {
+export interface Options extends Transport.TransportStreamOptions {
   /**
    * @see https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/s3clientconfig.html
    */

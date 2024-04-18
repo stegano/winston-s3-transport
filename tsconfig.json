@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "declaration": true,
     "target": "es2019",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "commonjs",
     "moduleResolution": "node",
@@ -18,9 +21,6 @@
       "src/*": ["src/*"]
     }
   },
-  "include": ["global.type.d.ts", "**/*", "**/.*", ".**/*"],
+  "include": ["global.type.d.ts", "**/*"],
   "exclude": ["node_modules"],
-  "ts-node": {
-    "files": true
-  }
 }

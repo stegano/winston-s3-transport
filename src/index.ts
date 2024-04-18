@@ -2,7 +2,7 @@ import Transport from "winston-transport";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { addMilliseconds, isAfter } from "date-fns";
 import { gzip } from "node-gzip";
-import { LogGroup, Options, S3TransportConfig } from "./index.type";
+import { LogGroup, Options, S3TransportConfig } from "./index.interface";
 
 class S3Transport extends Transport {
   logGroups: Record<string, LogGroup>;
