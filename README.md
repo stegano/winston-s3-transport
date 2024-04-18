@@ -1,4 +1,7 @@
 ![NPM License](https://img.shields.io/npm/l/winston-s3-transport)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 ![NPM Downloads](https://img.shields.io/npm/dw/winston-s3-transport)
 
 # Winston S3 Transport
@@ -89,3 +92,25 @@ logger.info({ userId: 'user001', ....logs });
 
 ## Motivation
 I made this so that it can be efficiently partitioned when storing log data in the S3 bucket. When you use vast amounts of S3 data in Athena, partitioned data can help you use the cost effectively.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/krsaedan"><img src="https://avatars.githubusercontent.com/u/77971873?v=4?s=100" width="100px;" alt="krsaedan"/><br /><sub><b>krsaedan</b></sub></a><br /><a href="https://github.com/stegano/winston-s3-transport/issues?q=author%3Akrsaedan" title="Bug reports">🐛</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
