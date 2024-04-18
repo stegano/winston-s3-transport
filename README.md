@@ -38,13 +38,13 @@ const s3Transport = new S3Transport({
       // If the 'userId' value does not exist, use the `anonymous` group.
       return logInfo?.message?.userId || "anonymous";
     },
-    bucketPath: (groupId: string = "default") => {
+    bucketPath: (group: string = "default") => {
       const date = new Date();
       const timestamp = format(date, "yyyyMMddhhmmss");
       const uuid = uuidv4();
       // The bucket path in which the log is uploaded. 
-      // You can create a bucket path by combining `groupId`, `timestamp`, and `uuid` values.
-      return `/logs/${groupId}/${timestamp}/${uuid}.log`;
+      // You can create a bucket path by combining `group`, `timestamp`, and `uuid` values.
+      return `/logs/${group}/${timestamp}/${uuid}.log`;
     },
   },
 });
@@ -75,7 +75,7 @@ logger.info({ userId: 'user001', ....logs });
 ### s3TransportConfig
 #### bucket: string
   * AWS S3 Bucket name
-#### bucketPath: _((groupId: string) => string) | string_
+#### bucketPath: _((group: string) => string) | string_
   * AWS S3 Bucket path to upload log files
 #### group?: _(<T = any>(logInfo: T) => string) | string (default: "default")_
   * Group for logs classification.
