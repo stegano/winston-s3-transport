@@ -22,10 +22,6 @@ export interface S3TransportConfig {
   bucketPath: ((groupId: string) => string) | string;
   // Group for logs classification.
   group?: (<T = any>(logInfo: T) => string) | string;
-  /**
-   * @deprecated Use group instead of groupId.
-   */
-  groupId?: (<T = any>(logInfo: T) => string) | string;
   // Data upload interval
   dataUploadInterval?: number;
   // Max data size
