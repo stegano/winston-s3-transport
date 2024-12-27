@@ -1,6 +1,6 @@
 ![NPM License](https://img.shields.io/npm/l/winston-s3-transport)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ![NPM Downloads](https://img.shields.io/npm/dw/winston-s3-transport)
 
@@ -104,6 +104,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/krsaedan"><img src="https://avatars.githubusercontent.com/u/77971873?v=4?s=100" width="100px;" alt="krsaedan"/><br /><sub><b>krsaedan</b></sub></a><br /><a href="https://github.com/stegano/winston-s3-transport/issues?q=author%3Akrsaedan" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vh-wwm"><img src="https://avatars.githubusercontent.com/u/173472019?v=4?s=100" width="100px;" alt="VH-WWM"/><br /><sub><b>VH-WWM</b></sub></a><br /><a href="https://github.com/stegano/winston-s3-transport/issues?q=author%3Avh-wwm" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
