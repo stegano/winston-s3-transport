@@ -79,7 +79,8 @@ class S3Transport extends Transport {
         this.s3Client,
         bucket,
         bucketPath,
-        logData
+        logData,
+        this.s3TransportConfig.gzip
       );
       logGroup.bucketPath = S3Transport.createBucketPath(
         groupId,
@@ -102,7 +103,8 @@ class S3Transport extends Transport {
         this.s3Client,
         bucket,
         bucketPath,
-        data
+        data,
+        this.s3TransportConfig.gzip
       );
     }
     return this.updateLogGroupList(rest);
@@ -177,7 +179,8 @@ class S3Transport extends Transport {
         this.s3Client,
         logGroup.bucket,
         logGroup.bucketPath,
-        logData
+        logData,
+        this.s3TransportConfig.gzip
       );
       /**
        * Create a new bucket path ⇛ Can no longer write files to the existing path

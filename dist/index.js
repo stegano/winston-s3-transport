@@ -68,7 +68,7 @@ class S3Transport extends winston_transport_1.default {
              */
             const logData = [...data];
             delete this.logGroups[groupId];
-            await S3Transport.uploadToS3Bucket(this.s3Client, bucket, bucketPath, logData);
+            await S3Transport.uploadToS3Bucket(this.s3Client, bucket, bucketPath, logData, this.s3TransportConfig.gzip);
             logGroup.bucketPath = S3Transport.createBucketPath(groupId, this.s3TransportConfig);
         }
         if ((0, date_fns_1.isAfter)(new Date(), (0, date_fns_1.addMilliseconds)(uploadTime || 0, dataUploadInterval)) &&
@@ -78,7 +78,7 @@ class S3Transport extends winston_transport_1.default {
              */
             logGroup.uploadTime = new Date();
             logGroup.isUpdated = false;
-            await S3Transport.uploadToS3Bucket(this.s3Client, bucket, bucketPath, data);
+            await S3Transport.uploadToS3Bucket(this.s3Client, bucket, bucketPath, data, this.s3TransportConfig.gzip);
         }
         return this.updateLogGroupList(rest);
     }
@@ -135,7 +135,7 @@ class S3Transport extends winston_transport_1.default {
             /**
              * Upload files
              */
-            S3Transport.uploadToS3Bucket(this.s3Client, logGroup.bucket, logGroup.bucketPath, logData);
+            S3Transport.uploadToS3Bucket(this.s3Client, logGroup.bucket, logGroup.bucketPath, logData, this.s3TransportConfig.gzip);
             /**
              * Create a new bucket path ⇛ Can no longer write files to the existing path
              */

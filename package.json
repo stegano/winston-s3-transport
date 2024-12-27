@@ -1,6 +1,6 @@
 {
   "name": "winston-s3-transport",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Logs generated through Winston can be transferred to an S3 bucket using `winston-s3-transport`.",
   "main": "dist/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "publish": "rm -rf ./dist ./.tsbuildinfo && npm run build && npm publish"
   },
   "contributors": [
-    "Yongwoo Jung<stegano@naver.com"
+    "Yongwoo Jung<stegano@naver.com>"
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.100.0",
