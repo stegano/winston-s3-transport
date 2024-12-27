@@ -1,10 +1,10 @@
 ![NPM License](https://img.shields.io/npm/l/winston-s3-transport)
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+![NPM Downloads](https://img.shields.io/npm/dw/winston-s3-transport) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-![NPM Downloads](https://img.shields.io/npm/dw/winston-s3-transport)
 
 # Winston S3 Transport
+
 > Logs generated through Winston can be transferred to an S3 bucket using `winston-s3-transport`.
 
 ## Installation
@@ -22,7 +22,9 @@ git clone https://github.com/stegano/winston-s3-transport.git
 ```
 
 ## Example
+
 > [!] The bucket path is created when the log is first created.
+
 ```ts
 // Example - `src/utils/logger.ts`
 import winston from "winston";
@@ -37,7 +39,7 @@ const s3Transport = new S3Transport({
   s3TransportConfig: {
     bucket: "my-bucket",
     group: (logInfo: any) => {
-      // Group logs with `userId` value and store them in memory. 
+      // Group logs with `userId` value and store them in memory.
       // If the 'userId' value does not exist, use the `anonymous` group.
       return logInfo?.message?.userId || "anonymous";
     },
@@ -45,7 +47,7 @@ const s3Transport = new S3Transport({
       const date = new Date();
       const timestamp = format(date, "yyyyMMddhhmmss");
       const uuid = uuidv4();
-      // The bucket path in which the log is uploaded. 
+      // The bucket path in which the log is uploaded.
       // You can create a bucket path by combining `group`, `timestamp`, and `uuid` values.
       return `/logs/${group}/${timestamp}/${uuid}.log`;
     },
@@ -62,6 +64,7 @@ export default logger;
 ```
 
 > Create log using winston in another module
+
 ```ts
 // Example - another module
 import logger from "src/utils/logger";
@@ -70,27 +73,42 @@ import logger from "src/utils/logger";
 logger.info({ userId: 'user001', ....logs });
 ```
 
-
 ## Configuration
-### s3ClientConfig
-> This library is internally using [`@aws-sdk/client-s3`](https://www.npmjs.com/package/@aws-sdk/client-s3) to upload files to AWS S3.
-  * Please see [AWSJavaScriptSDK/s3clientconfig](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/s3clientconfig.html)
-### s3TransportConfig
-#### bucket: string
-  * AWS S3 Bucket name
-#### bucketPath: _((group: string) => string) | string_
-  * AWS S3 Bucket path to upload log files
-#### group?: _(<T = any>(logInfo: T) => string) | string (default: "default")_
-  * Group for logs classification.
-#### dataUploadInterval?: _number (default: 1000 * 20)_
-  * Data upload interval(milliseconds)
-#### fileRotationInterval?: _number (default: 1000 * 60)_
-  * File rotation interval(milliseconds)
-#### maxDataSize?: number _(default: 1000 * 1000 * 2)_
-  * Max data size(byte)
 
+### s3ClientConfig
+
+> This library is internally using [`@aws-sdk/client-s3`](https://www.npmjs.com/package/@aws-sdk/client-s3) to upload files to AWS S3.
+
+- Please see [AWSJavaScriptSDK/s3clientconfig](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/s3clientconfig.html)
+
+### s3TransportConfig
+
+#### bucket: string
+
+- AWS S3 Bucket name
+
+#### bucketPath: _((group: string) => string) | string_
+
+- AWS S3 Bucket path to upload log files
+
+#### group?: _(<T = any>(logInfo: T) => string) | string (default: "default")_
+
+- Group for logs classification.
+
+#### dataUploadInterval?: _number (default: 1000 \* 20)_
+
+- Data upload interval(milliseconds)
+
+#### fileRotationInterval?: _number (default: 1000 \* 60)_
+
+- File rotation interval(milliseconds)
+
+#### maxDataSize?: number _(default: 1000 * 1000 * 2)_
+
+- Max data size(byte)
 
 ## Motivation
+
 I made this so that it can be efficiently partitioned when storing log data in the S3 bucket. When you use vast amounts of S3 data in Athena, partitioned data can help you use the cost effectively.
 
 ## Contributors ✨
