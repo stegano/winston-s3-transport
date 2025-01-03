@@ -4,7 +4,7 @@
     "outDir": "dist",
     "declarationDir": "dist",
     "declaration": true,
-    "target": "es2019",
+    "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -22,5 +22,5 @@
     }
   },
   "include": ["global.type.d.ts", "src/**/*"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "jest.config.ts", ".eslintrc.js"]
 }

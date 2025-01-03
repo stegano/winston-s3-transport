@@ -15,7 +15,7 @@ export interface LogGroup {
   uploadTime?: Date;
 }
 
-export interface S3TransportConfig {
+export interface Config {
   // Bucket name
   bucket: string;
   // Bucket path to upload files
@@ -37,5 +37,5 @@ export interface Options extends Transport.TransportStreamOptions {
    * @see https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/s3clientconfig.html
    */
   s3ClientConfig: S3ClientConfig;
-  s3TransportConfig: S3TransportConfig;
+  s3TransportConfig: Config;
 }
