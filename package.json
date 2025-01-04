@@ -6,11 +6,13 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./stream": {
       "import": "./dist/stream/index.js",
-      "require": "./dist/stream/index.js"
+      "require": "./dist/stream/index.js",
+      "types": "./dist/stream/index.d.ts"
     }
   },
   "scripts": {
