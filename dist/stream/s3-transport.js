@@ -125,12 +125,7 @@ class S3Transport extends winston_transport_1.default {
                         Key: generateBucketPath(group, log),
                         Body: bucketPathStream,
                     },
-                })
-                    .on("httpUploadProgress", (v) => {
-                    // eslint-disable-next-line no-console
-                    console.log("@@@ httpUploadProgress", v);
-                })
-                    .done();
+                }).done();
                 /**
                  * If the maximum file age is set,
                  * the stream is automatically closed after the set time.
