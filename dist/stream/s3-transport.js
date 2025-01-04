@@ -14,24 +14,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const winston_transport_1 = __importDefault(require("winston-transport"));
 const client_s3_1 = require("@aws-sdk/client-s3");
+const lib_storage_1 = require("@aws-sdk/lib-storage");
 const node_gzip_1 = require("node-gzip");
-const log_stream_1 = __importDefault(require("./log-stream"));
+const stream_1 = require("stream");
+const s3_transport_interface_1 = require("./s3-transport.interface");
 class S3Transport extends winston_transport_1.default {
     constructor(options) {
         super(options);
-        this.streams = {};
+        this.streamInfos = new Map();
         /**
          * options
          */
-        const { s3ClientConfig, S3TransportConfig } = options;
+        const { s3ClientConfig, s3TransportConfig } = options;
         /**
          * default config values
          */
         this.s3TransportConfig = Object.assign({ 
             /**
-             * bucketPath
+             * generateGruop
              */
-            bucketPath: () => "default", 
+            generateGruop: () => "default", 
+            /**
+             * generateBucketPath
+             */
+            generateBucketPath: () => "", 
             /**
              * maxBufferCount
              */
@@ -45,67 +51,136 @@ class S3Transport extends winston_transport_1.default {
              */
             maxFileSize: 1024 * 2, 
             /**
+             * maxFileAge
+             */
+            maxFileAge: 1000 * 60 * 5, 
+            /**
              * gzip
              */
-            gzip: false }, S3TransportConfig);
+            gzip: false }, s3TransportConfig);
         this.s3Client = new client_s3_1.S3Client(s3ClientConfig);
+        process
+            .on("SIGINT", () => __awaiter(this, void 0, void 0, function* () {
+            yield this.close();
+            process.exit(0);
+        }))
+            .on("beforeExit", () => __awaiter(this, void 0, void 0, function* () {
+            yield this.close();
+        }));
     }
     log(log, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const bucketPath = this.s3TransportConfig.bucketPath(log);
-            if (bucketPath in this.streams === false) {
+            const { bucket, generateGruop, generateBucketPath, maxBufferSize, maxBufferCount, maxFileSize, maxFileAge, gzip, } = this.s3TransportConfig;
+            /**
+             * Generate the log group for the path.
+             */
+            const group = generateGruop(log);
+            const data = `${JSON.stringify(log)}\n`;
+            const dataBuffer = gzip ? yield (0, node_gzip_1.gzip)(data) : Buffer.from(data);
+            /**
+             * Get the streamInfo object for the group.
+             */
+            let groupStreamInfo = this.streamInfos.get(group);
+            /**
+             * If the buffer size exceeds the maximum buffer size, the buffer is flushed.
+             */
+            if (groupStreamInfo &&
+                groupStreamInfo[s3_transport_interface_1.StreamInfoName.TotalWrittenBytes] +
+                    dataBuffer.byteLength >=
+                    maxFileSize) {
+                yield new Promise((resolve) => {
+                    groupStreamInfo === null || groupStreamInfo === void 0 ? void 0 : groupStreamInfo[s3_transport_interface_1.StreamInfoName.Stream].end(() => {
+                        resolve();
+                    });
+                });
+            }
+            /**
+             * Get the streamInfo object for the group.
+             */
+            groupStreamInfo = this.streamInfos.get(group);
+            if (groupStreamInfo === undefined) {
                 /**
                  * If the number of buffer size exceeds the maximum number of buffer sizes,
                  * the stream with the most written data is removed and a new stream is created.
                  */
-                if (Object.keys(this.streams).length >=
-                    this.s3TransportConfig.maxBufferCount) {
-                    const sortedStreams = Object.entries(this.streams).sort((a, b) => b[1].writtenBytes - a[1].writtenBytes);
-                    const [, stream] = sortedStreams[0];
-                    stream.flush();
+                if (this.streamInfos.size >= maxBufferCount) {
+                    const sortedStreamInfos = Array.from(this.streamInfos.entries()).sort((a, b) => b[1][0] - a[1][0]);
+                    const [, firstStreamInfo] = sortedStreamInfos[0];
+                    const [, firstStream] = firstStreamInfo;
+                    firstStream.end();
                 }
                 /**
-                 * Create a new stream
+                 * Create a new streamInfo
                  */
-                const logStream = new log_stream_1.default(this.s3TransportConfig.maxBufferSize);
-                this.streams[bucketPath] = logStream;
+                const bucketPathStream = new stream_1.PassThrough({
+                    highWaterMark: maxBufferSize,
+                });
                 /**
                  * If all data in the buffer is uploaded, the stream is closed and deleted from the streams object
                  */
-                this.s3Client
-                    .send(new client_s3_1.PutObjectCommand({
-                    Bucket: "bucsketPath",
-                    Key: bucketPath,
-                    Body: logStream,
-                }))
-                    .then(() => {
-                    delete this.streams[bucketPath];
+                const uploadPromise = new lib_storage_1.Upload({
+                    client: this.s3Client,
+                    params: {
+                        Bucket: bucket,
+                        Key: generateBucketPath(group, log),
+                        Body: bucketPathStream,
+                    },
                 })
-                    .catch(() => {
-                    delete this.streams[bucketPath];
+                    .on("httpUploadProgress", (v) => {
+                    // eslint-disable-next-line no-console
+                    console.log("@@@ httpUploadProgress", v);
+                })
+                    .done();
+                /**
+                 * If the maximum file age is set,
+                 * the stream is automatically closed after the set time.
+                 */
+                let autoFlushProcId;
+                if (maxFileAge > 0) {
+                    autoFlushProcId = setTimeout(() => {
+                        bucketPathStream.end();
+                    }, maxFileAge);
+                }
+                uploadPromise
+                    .then(() => {
+                    this.streamInfos.delete(group);
+                    clearTimeout(autoFlushProcId);
+                })
+                    .catch((error) => {
+                    // eslint-disable-next-line no-console
+                    console.error(error);
+                    this.streamInfos.delete(group);
+                    clearTimeout(autoFlushProcId);
                 });
-                logStream.once("error", () => {
+                bucketPathStream.once("error", () => {
                     /**
                      * If an error occurs, delete the stream.
                      */
-                    delete this.streams[bucketPath];
+                    this.streamInfos.delete(group);
+                    clearTimeout(autoFlushProcId);
                 });
+                groupStreamInfo = [0, bucketPathStream, uploadPromise];
+                this.streamInfos.set(group, groupStreamInfo);
             }
-            const stream = this.streams[bucketPath];
-            const logData = this.s3TransportConfig.gzip
-                ? yield (0, node_gzip_1.gzip)(`${JSON.stringify(log)}\n`)
-                : Buffer.from(`${JSON.stringify(log)}\n`);
             /**
              * Write log data to the stream.
              */
-            stream.write(logData);
-            /**
-             * If the buffer size exceeds the maximum buffer size, the buffer is flushed.
-             */
-            if (stream.writtenBytes >= this.s3TransportConfig.maxFileSize) {
-                stream.flush();
-            }
+            groupStreamInfo[s3_transport_interface_1.StreamInfoName.Stream].write(dataBuffer);
+            groupStreamInfo[s3_transport_interface_1.StreamInfoName.TotalWrittenBytes] += dataBuffer.length;
             next === null || next === void 0 ? void 0 : next();
+        });
+    }
+    close() {
+        return __awaiter(this, void 0, void 0, function* () {
+            /**
+             * Close streams.
+             */
+            const pormiseList = [...this.streamInfos.values()].map((groupStreamInfo) => {
+                const [, stream, uploadPromise] = groupStreamInfo;
+                stream.end();
+                return uploadPromise;
+            });
+            yield Promise.all(pormiseList);
         });
     }
 }

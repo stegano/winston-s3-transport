@@ -1,17 +1,23 @@
+/// <reference types="node" />
 import Transport from "winston-transport";
-import { S3ClientConfig } from "@aws-sdk/client-s3";
+import { CompleteMultipartUploadCommandOutput, S3ClientConfig } from "@aws-sdk/client-s3";
+import { PassThrough } from "stream";
 /**
  * Config
  */
-export interface Config {
+export interface Config<T = any> {
     /**
      * bucket
      */
     bucket: string;
     /**
-     * bucketPath
+     * generateGruop
      */
-    bucketPath?: (log: any) => string;
+    generateGruop?: (log: T) => string;
+    /**
+     * generateBucketPath
+     */
+    generateBucketPath?: (group: string, log: T) => string;
     /**
      * maxBufferSize
      */
@@ -24,6 +30,10 @@ export interface Config {
      * maxFileSize
      */
     maxFileSize?: number;
+    /**
+     * maxFileAge
+     */
+    maxFileAge?: number;
     /**
      * gzip
      */
@@ -41,5 +51,39 @@ export interface Options extends Transport.TransportStreamOptions {
     /**
      * S3TransportConfig
      */
-    S3TransportConfig: Config;
+    s3TransportConfig: Config;
 }
+/**
+ * StreamInfoName
+ */
+export declare enum StreamInfoName {
+    /**
+     * TotalWrittenBytes
+     */
+    TotalWrittenBytes = 0,
+    /**
+     * Stream
+     */
+    Stream = 1,
+    /**
+     * S3Upload
+     */
+    S3Upload = 2
+}
+/**
+ * StreamInfo
+ */
+export type StreamInfo = [
+    /**
+     * totalWrittenBytes
+     */
+    totalWrittenBytes: number,
+    /**
+     * stream
+     */
+    stream: PassThrough,
+    /**
+     * s3Upload
+     */
+    s3Upload: Promise<CompleteMultipartUploadCommandOutput>
+];
