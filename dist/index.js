@@ -26,9 +26,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IS3Transport = exports.S3Transport = void 0;
+exports.IS3Transport = exports.S3Transport = exports.IS3StreamTransport = exports.S3StreamTransport = void 0;
 const s3_transport_1 = __importDefault(require("./s3-transport"));
-var s3_transport_2 = require("./s3-transport");
-Object.defineProperty(exports, "S3Transport", { enumerable: true, get: function () { return __importDefault(s3_transport_2).default; } });
+var s3_transport_2 = require("./stream/s3-transport");
+Object.defineProperty(exports, "S3StreamTransport", { enumerable: true, get: function () { return __importDefault(s3_transport_2).default; } });
+exports.IS3StreamTransport = __importStar(require("./stream/s3-transport.interface"));
+var s3_transport_3 = require("./s3-transport");
+Object.defineProperty(exports, "S3Transport", { enumerable: true, get: function () { return __importDefault(s3_transport_3).default; } });
 exports.IS3Transport = __importStar(require("./s3-transport.interface"));
 exports.default = s3_transport_1.default;
