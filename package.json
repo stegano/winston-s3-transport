@@ -1,20 +1,19 @@
 {
   "name": "winston-s3-transport",
-  "version": "2.0.1",
+  "version": "2.0.4",
   "description": "Logs generated through Winston can be transferred to an S3 bucket using `winston-s3-transport`.",
   "main": "dist/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.js"
     },
     "./stream": {
-      "import": "./dist/stream/index.js",
-      "require": "./dist/stream/index.js",
-      "types": "./dist/stream/index.d.ts"
+      "default": "./dist/stream/index.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "lint": "eslint 'src/**/*.ts'",
     "test": "jest",
