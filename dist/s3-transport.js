@@ -181,6 +181,8 @@ class S3Transport extends winston_transport_1.default {
                 Bucket: bucket,
                 Key: bucketPath,
                 Body: body,
+                ContentType: "application/jsonl",
+                ContentEncoding: compress ? "gzip" : undefined,
             }));
             return true;
         });

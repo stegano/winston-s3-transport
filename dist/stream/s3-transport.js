@@ -16,10 +16,8 @@ const node_zlib_1 = require("node:zlib");
 const winston_transport_1 = __importDefault(require("winston-transport"));
 const client_s3_1 = require("@aws-sdk/client-s3");
 const lib_storage_1 = require("@aws-sdk/lib-storage");
-const node_gzip_1 = require("node-gzip");
 const stream_1 = require("stream");
 const s3_transport_interface_1 = require("./s3-transport.interface");
-const transformGzip = (0, node_zlib_1.createGzip)();
 class S3Transport extends winston_transport_1.default {
     constructor(options) {
         super(options);
@@ -78,7 +76,7 @@ class S3Transport extends winston_transport_1.default {
              */
             const group = generateGruop(log);
             const data = `${JSON.stringify(log)}\n`;
-            const dataBuffer = gzip ? yield (0, node_gzip_1.gzip)(data) : Buffer.from(data);
+            const dataBuffer = Buffer.from(data);
             /**
              * Get the streamInfo object for the group.
              */
@@ -125,7 +123,9 @@ class S3Transport extends winston_transport_1.default {
                     params: {
                         Bucket: bucket,
                         Key: generateBucketPath(group, log),
-                        Body: bucketPathStream.pipe(transformGzip),
+                        Body: gzip ? bucketPathStream.pipe((0, node_zlib_1.createGzip)()) : bucketPathStream,
+                        ContentType: "application/jsonl",
+                        ContentEncoding: gzip ? "gzip" : undefined,
                     },
                 }).done();
                 /**
