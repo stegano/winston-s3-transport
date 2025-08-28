@@ -2,7 +2,6 @@ import { createGzip } from "node:zlib";
 import TransportStream from "winston-transport";
 import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
-import { gzip as compress } from "node-gzip";
 import { PassThrough } from "stream";
 import {
   Options,
@@ -10,8 +9,6 @@ import {
   StreamInfo,
   StreamInfoName,
 } from "./s3-transport.interface";
-
-const transformGzip = createGzip();
 
 class S3Transport extends TransportStream {
   s3Client: S3Client;
@@ -90,7 +87,7 @@ class S3Transport extends TransportStream {
      */
     const group = generateGruop(log);
     const data = `${JSON.stringify(log)}\n`;
-    const dataBuffer = gzip ? await compress(data) : Buffer.from(data);
+    const dataBuffer = Buffer.from(data);
     /**
      * Get the streamInfo object for the group.
      */
@@ -141,7 +138,9 @@ class S3Transport extends TransportStream {
         params: {
           Bucket: bucket,
           Key: generateBucketPath(group, log),
-          Body: bucketPathStream.pipe(transformGzip),
+          Body: gzip ? bucketPathStream.pipe(createGzip()) : bucketPathStream,
+          ContentType: "application/jsonl",
+          ContentEncoding: gzip ? "gzip" : undefined,
         },
       }).done();
       /**

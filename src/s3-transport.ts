@@ -221,6 +221,8 @@ class S3Transport extends Transport {
         Bucket: bucket,
         Key: bucketPath,
         Body: body,
+        ContentType: "application/jsonl",
+        ContentEncoding: compress ? "gzip" : undefined,
       })
     );
     return true;
