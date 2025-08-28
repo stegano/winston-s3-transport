@@ -66,6 +66,10 @@ class S3Transport extends TransportStream {
         await this.close();
         process.exit(0);
       })
+      .on("SIGTERM", async () => {
+        await this.close();
+        process.exit(0);
+      })
       .on("beforeExit", async () => {
         await this.close();
       });
