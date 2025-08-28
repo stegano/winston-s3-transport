@@ -64,6 +64,10 @@ class S3Transport extends winston_transport_1.default {
             yield this.close();
             process.exit(0);
         }))
+            .on("SIGTERM", () => __awaiter(this, void 0, void 0, function* () {
+            yield this.close();
+            process.exit(0);
+        }))
             .on("beforeExit", () => __awaiter(this, void 0, void 0, function* () {
             yield this.close();
         }));
