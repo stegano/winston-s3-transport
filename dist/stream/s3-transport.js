@@ -12,12 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const node_zlib_1 = require("node:zlib");
 const winston_transport_1 = __importDefault(require("winston-transport"));
 const client_s3_1 = require("@aws-sdk/client-s3");
 const lib_storage_1 = require("@aws-sdk/lib-storage");
 const node_gzip_1 = require("node-gzip");
 const stream_1 = require("stream");
 const s3_transport_interface_1 = require("./s3-transport.interface");
+const transformGzip = (0, node_zlib_1.createGzip)();
 class S3Transport extends winston_transport_1.default {
     constructor(options) {
         super(options);
@@ -31,9 +33,9 @@ class S3Transport extends winston_transport_1.default {
          */
         this.s3TransportConfig = Object.assign({ 
             /**
-             * generateGruop
+             * generateGroup
              */
-            generateGruop: () => "default", 
+            generateGroup: () => "default", 
             /**
              * generateBucketPath
              */
@@ -70,7 +72,7 @@ class S3Transport extends winston_transport_1.default {
     }
     log(log, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { bucket, generateGruop, generateBucketPath, maxBufferSize, maxBufferCount, maxFileSize, maxFileAge, gzip, } = this.s3TransportConfig;
+            const { bucket, generateGroup: generateGruop, generateBucketPath, maxBufferSize, maxBufferCount, maxFileSize, maxFileAge, gzip, } = this.s3TransportConfig;
             /**
              * Generate the log group for the path.
              */
@@ -123,7 +125,7 @@ class S3Transport extends winston_transport_1.default {
                     params: {
                         Bucket: bucket,
                         Key: generateBucketPath(group, log),
-                        Body: bucketPathStream,
+                        Body: bucketPathStream.pipe(transformGzip),
                     },
                 }).done();
                 /**
