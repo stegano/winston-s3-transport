@@ -16,7 +16,7 @@ export interface Config<T = any> {
   /**
    * generateGruop
    */
-  generateGruop?: (log: T) => string;
+  generateGroup?: (log: T) => string;
   /**
    * generateBucketPath
    */

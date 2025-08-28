@@ -1,3 +1,4 @@
+import { createGzip } from "node:zlib";
 import TransportStream from "winston-transport";
 import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
@@ -9,6 +10,8 @@ import {
   StreamInfo,
   StreamInfoName,
 } from "./s3-transport.interface";
+
+const transformGzip = createGzip();
 
 class S3Transport extends TransportStream {
   s3Client: S3Client;
@@ -28,9 +31,9 @@ class S3Transport extends TransportStream {
      */
     this.s3TransportConfig = {
       /**
-       * generateGruop
+       * generateGroup
        */
-      generateGruop: () => "default",
+      generateGroup: () => "default",
       /**
        * generateBucketPath
        */
@@ -74,7 +77,7 @@ class S3Transport extends TransportStream {
   async log(log: any, next: () => void) {
     const {
       bucket,
-      generateGruop,
+      generateGroup: generateGruop,
       generateBucketPath,
       maxBufferSize,
       maxBufferCount,
@@ -138,7 +141,7 @@ class S3Transport extends TransportStream {
         params: {
           Bucket: bucket,
           Key: generateBucketPath(group, log),
-          Body: bucketPathStream,
+          Body: bucketPathStream.pipe(transformGzip),
         },
       }).done();
       /**
