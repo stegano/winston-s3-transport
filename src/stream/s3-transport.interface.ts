@@ -14,7 +14,7 @@ export interface Config<T = any> {
    */
   bucket: string;
   /**
-   * generateGruop
+   * generateGroup
    */
   generateGroup?: (log: T) => string;
   /**
@@ -74,6 +74,10 @@ export enum StreamInfoName {
    * S3Upload
    */
   S3Upload = 2,
+  /**
+   * ClearProcId
+   */
+  ClearProcId = 3,
 }
 
 /**
@@ -91,5 +95,9 @@ export type StreamInfo = [
   /**
    * s3Upload
    */
-  s3Upload: Promise<CompleteMultipartUploadCommandOutput>
+  s3Upload: Promise<CompleteMultipartUploadCommandOutput>,
+  /**
+   * ClearProcId
+   */
+  clearProcId: NodeJS.Timeout | null
 ];

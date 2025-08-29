@@ -95,7 +95,7 @@ class S3Transport extends TransportStream {
     /**
      * Get the streamInfo object for the group.
      */
-    let groupStreamInfo = this.streamInfos.get(group);
+    let groupStreamInfo: StreamInfo | undefined = this.streamInfos.get(group);
     /**
      * If the buffer size exceeds the maximum buffer size, the buffer is flushed.
      */
@@ -175,7 +175,12 @@ class S3Transport extends TransportStream {
         this.streamInfos.delete(group);
         clearTimeout(autoFlushProcId);
       });
-      groupStreamInfo = [0, bucketPathStream, uploadPromise];
+      groupStreamInfo = [
+        0,
+        bucketPathStream,
+        uploadPromise,
+        null,
+      ] as StreamInfo;
       this.streamInfos.set(group, groupStreamInfo);
     }
     /**
@@ -183,6 +188,20 @@ class S3Transport extends TransportStream {
      */
     groupStreamInfo[StreamInfoName.Stream].write(dataBuffer);
     groupStreamInfo[StreamInfoName.TotalWrittenBytes] += dataBuffer.length;
+    groupStreamInfo[StreamInfoName.ClearProcId] = setTimeout(() => {
+      if (groupStreamInfo === undefined) {
+        return;
+      }
+      /**
+       * Close the stream after 10 seconds have passed since the data was written.
+       */
+      const clearProcId = groupStreamInfo[StreamInfoName.ClearProcId];
+      if (clearProcId) {
+        clearTimeout(clearProcId);
+        groupStreamInfo[StreamInfoName.ClearProcId] = null;
+        groupStreamInfo[StreamInfoName.Stream].end();
+      }
+    }, 1000 * 10);
     next?.();
   }
 
