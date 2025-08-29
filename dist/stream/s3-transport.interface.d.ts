@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import Transport from "winston-transport";
 import { CompleteMultipartUploadCommandOutput, S3ClientConfig } from "@aws-sdk/client-s3";
 import { PassThrough } from "stream";
@@ -11,7 +12,7 @@ export interface Config<T = any> {
      */
     bucket: string;
     /**
-     * generateGruop
+     * generateGroup
      */
     generateGroup?: (log: T) => string;
     /**
@@ -68,7 +69,11 @@ export declare enum StreamInfoName {
     /**
      * S3Upload
      */
-    S3Upload = 2
+    S3Upload = 2,
+    /**
+     * ClearProcId
+     */
+    ClearProcId = 3
 }
 /**
  * StreamInfo
@@ -85,5 +90,9 @@ export type StreamInfo = [
     /**
      * s3Upload
      */
-    s3Upload: Promise<CompleteMultipartUploadCommandOutput>
+    s3Upload: Promise<CompleteMultipartUploadCommandOutput>,
+    /**
+     * ClearProcId
+     */
+    clearProcId: NodeJS.Timeout | null
 ];

@@ -18,4 +18,8 @@ var StreamInfoName;
      * S3Upload
      */
     StreamInfoName[StreamInfoName["S3Upload"] = 2] = "S3Upload";
+    /**
+     * ClearProcId
+     */
+    StreamInfoName[StreamInfoName["ClearProcId"] = 3] = "ClearProcId";
 })(StreamInfoName = exports.StreamInfoName || (exports.StreamInfoName = {}));

@@ -160,7 +160,12 @@ class S3Transport extends winston_transport_1.default {
                     this.streamInfos.delete(group);
                     clearTimeout(autoFlushProcId);
                 });
-                groupStreamInfo = [0, bucketPathStream, uploadPromise];
+                groupStreamInfo = [
+                    0,
+                    bucketPathStream,
+                    uploadPromise,
+                    null,
+                ];
                 this.streamInfos.set(group, groupStreamInfo);
             }
             /**
@@ -168,6 +173,20 @@ class S3Transport extends winston_transport_1.default {
              */
             groupStreamInfo[s3_transport_interface_1.StreamInfoName.Stream].write(dataBuffer);
             groupStreamInfo[s3_transport_interface_1.StreamInfoName.TotalWrittenBytes] += dataBuffer.length;
+            groupStreamInfo[s3_transport_interface_1.StreamInfoName.ClearProcId] = setTimeout(() => {
+                if (groupStreamInfo === undefined) {
+                    return;
+                }
+                /**
+                 * Close the stream after 10 seconds have passed since the data was written.
+                 */
+                const clearProcId = groupStreamInfo[s3_transport_interface_1.StreamInfoName.ClearProcId];
+                if (clearProcId) {
+                    clearTimeout(clearProcId);
+                    groupStreamInfo[s3_transport_interface_1.StreamInfoName.ClearProcId] = null;
+                    groupStreamInfo[s3_transport_interface_1.StreamInfoName.Stream].end();
+                }
+            }, 1000 * 10);
             next === null || next === void 0 ? void 0 : next();
         });
     }
