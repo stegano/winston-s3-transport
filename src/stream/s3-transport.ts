@@ -78,7 +78,7 @@ class S3Transport extends TransportStream {
   async log(log: any, next: () => void) {
     const {
       bucket,
-      generateGroup: generateGruop,
+      generateGroup,
       generateBucketPath,
       maxBufferSize,
       maxBufferCount,
@@ -89,7 +89,7 @@ class S3Transport extends TransportStream {
     /**
      * Generate the log group for the path.
      */
-    const group = generateGruop(log);
+    const group = generateGroup(log);
     const data = `${JSON.stringify(log)}\n`;
     const dataBuffer = Buffer.from(data);
     /**
