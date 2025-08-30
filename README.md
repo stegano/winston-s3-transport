@@ -73,7 +73,7 @@ export default logger;
 
 ## Options
 
-## s3ClientConfig
+### s3ClientConfig
 
 > This library is internally using [`@aws-sdk/client-s3`](https://www.npmjs.com/package/@aws-sdk/client-s3) to upload files to AWS S3.
 
