@@ -10,14 +10,14 @@ import {
   StreamInfoName,
 } from "./s3-transport.interface";
 
-class S3Transport extends TransportStream {
+class S3Transport<T = any> extends TransportStream {
   s3Client: S3Client;
 
   s3TransportConfig: Required<Config>;
 
   streamInfos: Map<string, StreamInfo> = new Map();
 
-  constructor(options: Options) {
+  constructor(options: Options<T>) {
     super(options);
     /**
      * options
@@ -52,6 +52,10 @@ class S3Transport extends TransportStream {
        */
       maxFileAge: 1000 * 60 * 5,
       /**
+       * maxIdleTime
+       */
+      maxIdleTime: 1000 * 10,
+      /**
        * gzip
        */
       gzip: false,
@@ -82,6 +86,7 @@ class S3Transport extends TransportStream {
       generateBucketPath,
       maxBufferSize,
       maxBufferCount,
+      maxIdleTime,
       maxFileSize,
       maxFileAge,
       gzip,
@@ -207,7 +212,7 @@ class S3Transport extends TransportStream {
         groupStreamInfo[StreamInfoName.ClearProcId] = null;
         groupStreamInfo[StreamInfoName.Stream].end();
       }
-    }, 1000 * 10);
+    }, maxIdleTime);
     next?.();
   }
 
