@@ -21,29 +21,46 @@ export interface Config<T = any> {
     generateBucketPath?: (group: string, log: T) => string;
     /**
      * maxBufferSize
+     * @default 1024
      */
     maxBufferSize?: number;
     /**
      * maxBufferCount
+     * If the number of buffer size exceeds the maximum number of buffer sizes,
+     * the stream with the most written data is flushed and a new stream is created.
+     * @default 50
      */
     maxBufferCount?: number;
     /**
      * maxFileSize
+     * If the size of the buffer exceeds the maximum size, the stream is automatically flushed and new stream is created.
+     * @default 1024 * 2
      */
     maxFileSize?: number;
     /**
      * maxFileAge
+     * If the file age exceeds the set time,
+     * the stream is automatically flushed and new stream is created after the set time.
+     * @default 1000 * 60 * 5
      */
     maxFileAge?: number;
     /**
+     * maxIdleTime
+     * If the data is not written for the set time,
+     * the stream is automatically flushed and new stream is created after the set time.
+     * @default 1000 * 10
+     */
+    maxIdleTime?: number;
+    /**
      * gzip
+     * @default false
      */
     gzip?: boolean;
 }
 /**
  * Options
  */
-export interface Options extends Transport.TransportStreamOptions {
+export interface Options<T = any> extends Transport.TransportStreamOptions {
     /**
      * s3ClientConfig
      * @see https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/s3clientconfig.html
@@ -52,7 +69,7 @@ export interface Options extends Transport.TransportStreamOptions {
     /**
      * S3TransportConfig
      */
-    s3TransportConfig: Config;
+    s3TransportConfig: Config<T>;
 }
 /**
  * StreamInfoName

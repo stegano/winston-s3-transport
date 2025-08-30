@@ -55,6 +55,10 @@ class S3Transport extends winston_transport_1.default {
              */
             maxFileAge: 1000 * 60 * 5, 
             /**
+             * maxIdleTime
+             */
+            maxIdleTime: 1000 * 10, 
+            /**
              * gzip
              */
             gzip: false }, s3TransportConfig);
@@ -74,11 +78,11 @@ class S3Transport extends winston_transport_1.default {
     }
     log(log, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { bucket, generateGroup: generateGruop, generateBucketPath, maxBufferSize, maxBufferCount, maxFileSize, maxFileAge, gzip, } = this.s3TransportConfig;
+            const { bucket, generateGroup, generateBucketPath, maxBufferSize, maxBufferCount, maxIdleTime, maxFileSize, maxFileAge, gzip, } = this.s3TransportConfig;
             /**
              * Generate the log group for the path.
              */
-            const group = generateGruop(log);
+            const group = generateGroup(log);
             const data = `${JSON.stringify(log)}\n`;
             const dataBuffer = Buffer.from(data);
             /**
@@ -173,6 +177,12 @@ class S3Transport extends winston_transport_1.default {
              */
             groupStreamInfo[s3_transport_interface_1.StreamInfoName.Stream].write(dataBuffer);
             groupStreamInfo[s3_transport_interface_1.StreamInfoName.TotalWrittenBytes] += dataBuffer.length;
+            if (groupStreamInfo[s3_transport_interface_1.StreamInfoName.ClearProcId] !== null) {
+                /**
+                 * If the clearProcId is not null, clear the timeout.
+                 */
+                clearTimeout(groupStreamInfo[s3_transport_interface_1.StreamInfoName.ClearProcId]);
+            }
             groupStreamInfo[s3_transport_interface_1.StreamInfoName.ClearProcId] = setTimeout(() => {
                 if (groupStreamInfo === undefined) {
                     return;
@@ -186,7 +196,7 @@ class S3Transport extends winston_transport_1.default {
                     groupStreamInfo[s3_transport_interface_1.StreamInfoName.ClearProcId] = null;
                     groupStreamInfo[s3_transport_interface_1.StreamInfoName.Stream].end();
                 }
-            }, 1000 * 10);
+            }, maxIdleTime);
             next === null || next === void 0 ? void 0 : next();
         });
     }
@@ -195,12 +205,12 @@ class S3Transport extends winston_transport_1.default {
             /**
              * Close streams.
              */
-            const pormiseList = [...this.streamInfos.values()].map((groupStreamInfo) => {
+            const promiseList = [...this.streamInfos.values()].map((groupStreamInfo) => {
                 const [, stream, uploadPromise] = groupStreamInfo;
                 stream.end();
                 return uploadPromise;
             });
-            yield Promise.all(pormiseList);
+            yield Promise.all(promiseList);
         });
     }
 }
