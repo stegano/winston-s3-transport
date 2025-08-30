@@ -188,6 +188,12 @@ class S3Transport extends TransportStream {
      */
     groupStreamInfo[StreamInfoName.Stream].write(dataBuffer);
     groupStreamInfo[StreamInfoName.TotalWrittenBytes] += dataBuffer.length;
+    if (groupStreamInfo[StreamInfoName.ClearProcId] !== null) {
+      /**
+       * If the clearProcId is not null, clear the timeout.
+       */
+      clearTimeout(groupStreamInfo[StreamInfoName.ClearProcId]);
+    }
     groupStreamInfo[StreamInfoName.ClearProcId] = setTimeout(() => {
       if (groupStreamInfo === undefined) {
         return;
@@ -209,14 +215,14 @@ class S3Transport extends TransportStream {
     /**
      * Close streams.
      */
-    const pormiseList = [...this.streamInfos.values()].map(
+    const promiseList = [...this.streamInfos.values()].map(
       (groupStreamInfo) => {
         const [, stream, uploadPromise] = groupStreamInfo;
         stream.end();
         return uploadPromise;
       }
     );
-    await Promise.all(pormiseList);
+    await Promise.all(promiseList);
   }
 }
 
