@@ -45,7 +45,7 @@ const s3Transport = new S3StreamTransport<Log>({
   },
   s3TransportConfig: {
     bucket: "my-bucket",
-    generateBucketPath: (log: Log) => {
+    generateGroup: (log: Log) => {
       // Group logs with `userId` value and store them in memory.
       // If the 'userId' value does not exist, use the `anonymous` group.
       return log?.message.userId || "anonymous";
